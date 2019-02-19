@@ -1,4 +1,4 @@
-package com.demo.zookeeper;
+package java.com.demo.zookeeper.zookepperUse;
 
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;

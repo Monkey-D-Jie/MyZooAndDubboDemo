@@ -1,4 +1,4 @@
-package com.demo.zookeeper;
+package java.com.demo.zookeeper.zookepperUse;
 
 import org.apache.zookeeper.*;
 import org.apache.zookeeper.data.Stat;
@@ -10,11 +10,11 @@ import java.util.concurrent.CountDownLatch;
  *
  * @Author: Wangjie
  * @Date: 2019-01-29 15:22
- * @Description: 同步方式获取节点数据
+ * @Description: 异步方式获取节点数据
  * To change this template use File | Settings | File and Templates.
  */
 
-public class ZookeeperGetDataSynUsage implements Watcher{
+public class ZookeeperGetDataASynUsage implements Watcher{
 
     private static CountDownLatch connectedSemaphore = new CountDownLatch(1);
     private static ZooKeeper zk = null;
@@ -36,15 +36,15 @@ public class ZookeeperGetDataSynUsage implements Watcher{
 
     public static void main(String[] args) {
         try {
-            String path = "/zk-book-2";
+            String path = "/zk-book-3";
             zk = new ZooKeeper("127.0.0.1:2181", 5000,
-                    new ZookeeperGetDataSynUsage());
+                    new ZookeeperGetDataASynUsage());
             connectedSemaphore.await();
+
             zk.create(path, "123".getBytes(), ZooDefs.Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
             System.out.println("success create znode: " + path);
 
-            System.out.println("the data of znode " + path + " is : " + new String(zk.getData(path, true, stat)));
-            System.out.println("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
+            zk.getData(path, true, new IDataCallback(), null);
 
             zk.setData(path, "123".getBytes(), -1);
 
@@ -53,6 +53,14 @@ public class ZookeeperGetDataSynUsage implements Watcher{
             e.printStackTrace();
         } finally {
             System.out.println("为测试的严谨性而生");
+        }
+    }
+
+    static class IDataCallback implements AsyncCallback.DataCallback {
+        @Override
+        public void processResult(int rc, String path, Object ctx, byte[] data, Stat stat) {
+            System.out.println("rc: " + rc + ", path: " + path + ", data: " + new String(data));
+            System.out.println("czxID: " + stat.getCzxid() + ", mzxID: " + stat.getMzxid() + ", version: " + stat.getVersion());
         }
     }
 }

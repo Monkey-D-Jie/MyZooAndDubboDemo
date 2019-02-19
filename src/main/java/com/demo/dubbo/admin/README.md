@@ -1,0 +1,3 @@
+Dubbo的管理页面是另一个项目组成的，并没有集成在Dubbo的jar包中
+搭建方式和具体的说明请移步
+http://note.youdao.com/noteshare?id=e36308e61d6d29c740ebab7c04491030&sub=71964C3243214D809FA1EC990ED0DF08
